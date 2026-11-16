@@ -8,7 +8,7 @@
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-555?style=flat" alt="MIT license"></a>
 </p>
 
-<p align="center"><b><a href="namaz-vakti-mac.jsx">Download namaz-vakti-mac.jsx</a></b> and paste it into <a href="https://apps.apple.com/app/scriptwidget/id1555600758">ScriptWidget</a></p>
+<p align="center"><b><a href="https://raw.githubusercontent.com/AlparslanSemiz/prayer-times-widget/main/namaz-vakti-mac.jsx">Download namaz-vakti-mac.jsx</a></b> and paste it into <a href="https://apps.apple.com/app/scriptwidget/id1555600758">ScriptWidget</a></p>
 
 ## Why
 
@@ -20,6 +20,7 @@ Prayer-time apps are heavy for a question you ask many times a day: which prayer
 - **Diyanet method:** times come from the [Aladhan API](https://aladhan.com/prayer-times-api) with `method=13` (Diyanet İşleri Başkanlığı).
 - **Automatic location:** `$location` (CoreLocation) on iOS. If that is unavailable, an approximate location from the IP address.
 - **Few network calls:** the day's times are cached in `$storage` and refreshed when the day changes or you move more than about 20 km.
+- **Works offline:** if the network fails, the last cached times are shown; with no cache yet, the widget shows `--:--` placeholders and a warning instead of crashing, and recovers once you are online.
 - **Readable everywhere:** blue accents and grey text work in light and dark mode, on iPhone and on the Mac desktop.
 - **Kerahat warning:** a `⚠️` mark during the kerahat times.
 
