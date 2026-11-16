@@ -1,47 +1,66 @@
-# 🌙 Namaz Vakti (ScriptWidget)
+<h1 align="center">Namaz Vakti</h1>
+<p align="center">A small prayer-times widget for macOS and iOS that shows the current prayer and the time left.</p>
 
-macOS / iOS için [ScriptWidget](https://apps.apple.com/app/scriptwidget/id1555600758) üzerinde çalışan, bulunduğun konuma göre namaz vakitlerini gösteren sade bir widget. Konumu otomatik algılar, Diyanet hesaplama yöntemini kullanır ve aynı konumda kaldıkça günde yalnızca **bir kez** internete çıkar.
+<p align="center">
+<img src="https://img.shields.io/badge/ScriptWidget-JSX-555?style=flat" alt="ScriptWidget">
+<img src="https://img.shields.io/badge/method-Diyanet-555?style=flat" alt="Diyanet method">
+<img src="https://img.shields.io/badge/API%20key-none-555?style=flat" alt="no API key">
+<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-555?style=flat" alt="MIT license"></a>
+</p>
 
-## Özellikler
+<p align="center"><b><a href="https://raw.githubusercontent.com/AlparslanSemiz/prayer-times-widget/main/namaz-vakti-mac.jsx">Download namaz-vakti-mac.jsx</a></b> and paste it into <a href="https://apps.apple.com/app/scriptwidget/id1555600758">ScriptWidget</a></p>
 
-- **Otomatik konum:** cihazın konum servisleri (`$location` / CoreLocation) ile bulunduğun yeri algılar. Konum alınamazsa IP üzerinden yaklaşık konum kullanılır.
-- **Diyanet yöntemi:** vakitler [Aladhan API](https://aladhan.com/prayer-times-api) `method=13` (Diyanet İşleri Başkanlığı) ile hesaplanır.
-- **Şu anki vakit + kalan süre:** örn. `İkindi · 2sa 41dk`.
-- **Her zeminde okunur renkler:** vurgular mavi, kalan metin gri tonlarında. Açık ve koyu modda, iPhone'da ve Mac masaüstünde aynı şekilde okunur.
-- **Az ağ isteği:** veriler `$storage` ile önbelleğe alınır. Aynı gün içinde ve aynı konumda tekrar internete çıkılmaz. Gün değişince veya konum yaklaşık 20 km'den fazla değişince vakitler otomatik yenilenir.
-- **Kerahat uyarısı:** kerahat vakitlerinde `⚠️` işareti.
+## Why
 
-## Kurulum
+Prayer-time apps are heavy for a question you ask many times a day: which prayer is it and how long until the next one? This is one script file for [ScriptWidget](https://apps.apple.com/app/scriptwidget/id1555600758). It finds your location, uses the Diyanet calculation method and goes online once a day at most.
 
-1. App Store'dan **ScriptWidget** uygulamasını indir.
-2. Uygulamada yeni bir script oluştur ve [`namaz-vakti-mac.jsx`](namaz-vakti-mac.jsx) dosyasının içeriğini yapıştır.
-3. **Konum iznini ver (iOS):**
-   - Script'i bir kez ScriptWidget uygulamasının içinde çalıştır, çıkan konum iznini "Uygulamayı Kullanırken" olarak onayla.
-   - macOS'ta ScriptWidget konum servislerini desteklemiyor ("Location services are not available on this platform"). Mac'te widget IP üzerinden yaklaşık konum kullanır, istersen `SABIT_KONUM` ayarıyla şehri sabitleyebilirsin.
-4. Ana ekrana / masaüstüne ScriptWidget widget'ı ekle ve bu script'i seç.
+## Features
 
-> Konum izni verilmezse widget IP üzerinden yaklaşık konumu kullanır. O da alınamazsa dosyadaki yedek konum (`FALLBACK`) devreye girer.
+- **Current prayer and time left**, for example `İkindi · 2sa 41dk`. The widget text is Turkish.
+- **Diyanet method:** times come from the [Aladhan API](https://aladhan.com/prayer-times-api) with `method=13` (Diyanet İşleri Başkanlığı).
+- **Automatic location:** `$location` (CoreLocation) on iOS. If that is unavailable, an approximate location from the IP address.
+- **Few network calls:** the day's times are cached in `$storage` and refreshed when the day changes or you move more than about 20 km.
+- **Works offline:** if the network fails, the last cached times are shown; with no cache yet, the widget shows `--:--` placeholders and a warning instead of crashing, and recovers once you are online.
+- **Readable everywhere:** blue accents and grey text work in light and dark mode, on iPhone and on the Mac desktop.
+- **Kerahat warning:** a `⚠️` mark during the kerahat times.
 
-## Özelleştirme
+## Install
 
-Dosyanın en üstündeki ayarlardan değiştirebilirsin:
+1. Install **ScriptWidget** from the App Store.
+2. Create a new script in the app and paste the contents of [`namaz-vakti-mac.jsx`](namaz-vakti-mac.jsx).
+3. iOS: run the script once inside ScriptWidget and allow location access ("While Using the App").
+4. Add a ScriptWidget widget to the Home Screen or desktop and pick this script.
 
-- `SABIT_KONUM`: konumu elle sabitlemek için, ör. `{ lat: 41.0082, lon: 28.9784, city: "İstanbul" }`. Doluysa konum izni ve IP konumu hiç kullanılmaz. Varsayılan: `null` (otomatik konum).
-- `FALLBACK`: hiçbir konum kaynağı çalışmazsa kullanılacak yedek koordinat ve şehir. Varsayılan: Karlsruhe.
-- `METHOD`: hesaplama yöntemi. `13` = Diyanet. Diğer yöntemler için Aladhan dokümanına bakabilirsin.
+On macOS, ScriptWidget does not support location services ("Location services are not available on this platform"), so the widget uses the IP location there. Pin a city with `SABIT_KONUM` if you prefer.
 
-## Nasıl çalışır?
+Without location permission the widget uses the IP location. If that fails too, it uses the `FALLBACK` coordinates in the file.
 
-1. `$location` ile koordinat alınır (şehir seviyesi doğruluk yeterli). Alınamazsa [ipwho.is](https://ipwho.is) üzerinden yaklaşık IP konumu, o da olmazsa önbellekteki son konum ve `FALLBACK` denenir.
-2. [BigDataCloud](https://www.bigdatacloud.com/) reverse-geocode ile koordinattan şehir adı bulunur (yalnızca başlıkta göstermek için).
-3. Aladhan API'den o günün vakitleri çekilir.
-4. Sonuç `$storage`'a o günün tarihi ve konumuyla yazılır. Widget tekrar çalıştığında aynı güne ve aşağı yukarı aynı konuma ait veri varsa internete çıkılmaz, sadece kalan süre yerelde yeniden hesaplanır.
+## Settings
 
-## Notlar
+Constants at the top of the file:
 
-- Üstteki saat ve kalan süre, widget en son ne zaman yenilendiyse o anı gösterir. iOS/macOS widget'ları saniye saniye güncellenmez; sistem kendi zaman çizelgesine göre arada bir yeniler, bu yüzden birkaç dakikalık gecikme normaldir.
-- Kullanılan API'lerin hiçbiri anahtar (API key) gerektirmez ve ücretsizdir.
+- `SABIT_KONUM`: pin the location, for example `{ lat: 41.0082, lon: 28.9784, city: "İstanbul" }`. When set, neither location permission nor IP location is used. Default `null`.
+- `FALLBACK`: coordinates used when no location source works. Default: Karlsruhe.
+- `METHOD`: calculation method. `13` is Diyanet; see the Aladhan docs for others.
 
-## Lisans
+<details>
+<summary>How it works</summary>
+
+1. Coordinates come from `$location` (city-level accuracy is enough). If that fails: approximate IP location from [ipwho.is](https://ipwho.is), then the last cached location, then `FALLBACK`.
+2. [BigDataCloud](https://www.bigdatacloud.com/) reverse geocoding turns the coordinates into a city name, shown in the title only.
+3. Today's times are fetched from the Aladhan API.
+4. The result is stored in `$storage` with the date and location. On the next run with the same day and roughly the same place, nothing is fetched and only the time left is recalculated locally.
+
+</details>
+
+## Status
+
+The time shown is the moment the widget last refreshed. iOS and macOS refresh widgets on their own schedule, so a delay of a few minutes is normal. None of the APIs needs a key, and all are free.
+
+## Tech
+
+JSX for ScriptWidget, Aladhan API, ipwho.is, BigDataCloud.
+
+## License
 
 [MIT](LICENSE)
